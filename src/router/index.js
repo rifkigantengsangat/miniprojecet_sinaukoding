@@ -41,6 +41,11 @@ const routes = [
     component: () => import('../views/EditBarang.vue'),
   },
   {
+    path: '/supplier/:id',
+    name : 'editSupplier',
+    component: () => import('../views/EditSupplier.vue'),
+  },
+  {
     path: '/register',
     name: 'Register',
     component: RegisterView

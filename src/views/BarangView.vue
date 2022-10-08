@@ -36,7 +36,7 @@
           <div class="px-2">
             <button class="btn btn-primary">Previous Page</button>
         </div>
-         <button @click='nextpage' class="btn btn-primary">Next Page</button>
+         <button @click='nextpage()' class="btn btn-primary">Next Page</button>
          <h5>{{page}}</h5>
           </div>
     </div>
@@ -59,19 +59,21 @@
         }
        
     },
-    watch: {
-      page: function(newValue, oldValue) {
-          this.getData()
-      }
-  },
+    
     methods:{
         nextpage(){
-            console.log(this.$store.state.page);
-            this.$store.commit('NEXTPAGE')
+            this.$store.state.page ++;
+            console.log(this.$store.state.page)
+            this.$store.dispatch('GET_DATA');
+
+            
     },
     deleteData(id){
       console.log(id)
       this.$store.dispatch('DELETE_BARANG',id)
+    },
+    checktype(stok){
+      console.log(typeof(stok))
     }
 }
    

@@ -1,20 +1,131 @@
 <template lang="">
-    <div>
-        
+  <div
+    class="d-flex vh-100 container-fluid align-items-center justify-content-center"
+  >
+    <div class="w-50 shadow p-4">
+      <form @submit.prevent="editBarang">
+        <div class="row mb-3">
+          <label for="inputbarang" class="col-sm-2 col-form-label"
+            >Nama Barang</label
+          >
+          <div class="col-sm-10">
+            <input
+              type="text"
+              class="form-control"
+              id="inputbarang"
+              placeholder="masukan nama barang"
+              v-model="namabarang"
+            />
+          </div>
+        </div>
+        <div class="row mb-3">
+          <label for="inputharga" class="col-sm-2 col-form-label"
+            >Harga Barang</label
+          >
+          <div class="col-sm-10">
+            <input
+              type="text"
+              class="form-control"
+              id="inputharga"
+              placeholder="masukan harga barang"
+              v-model="hargabarang"
+            />
+          </div>
+        </div>
+        <div class="row mb-3">
+          <label for="inputstok" class="col-sm-2 col-form-label"
+            >stok barang</label
+          >
+          <div class="col-sm-10">
+            <input
+              type="text"
+              class="form-control"
+              id="inputstok"
+              placeholder="masukan stok barang"
+              v-model="StokBarang"
+            />
+          </div>
+        </div>
+        <div class="row mb-3">
+          <label for="inputsupp" class="col-sm-2 col-form-label"
+            >Supplier</label
+          >
+          <div class="col-sm-10">
+            <input
+              type="text"
+              class="form-control mb-1"
+              id="inputsupp"
+              placeholder="masukan Nama supplier"
+              v-model="namasupplier"
+            />
+            <input
+              type="text"
+              class="form-control mb-1"
+              placeholder="Masukan Alamat Supplier"
+              v-model="alamatsupplier"
+            />
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Masukan No Telp Supplier"
+              v-model="nosupplier"
+            />
+          </div>
+        </div>
+        <hr />
+        <div class="d-flex justify-content-between align-items-center">
+          <button type="submit" class="btn btn-primary">Kembali</button>
+          <button type="button" class="btn btn-primary">Update</button>
+        </div>
+      </form>
     </div>
+  </div>
 </template>
 <script>
+import axios from 'axios'
 export default {
-    data(){
-        return {
+  data() {
+    return {
+      namabarang: "",
+      hargabarang: "",
+      StokBarang: "",
+      namasupplier: "",
+      alamatsupplier: "",
+      nosupplier: "",
+    };
+  },
+  created(){
+  this.fetchDataId();
+  },
+  methods:{
+    async fetchDataId(){
+        const {data} = await axios.get(`http://159.223.57.121:8090/barang/find-by-id/${this.$route.params.id}`,{
+        headers: { 
+          'Authorization' : 'Bearer ' + this.$store.state.token,
+        }
+      })
+      this.namabarang =data.data.namaBarang
+      this.hargabarang = data.data.harga
+      this.StokBarang = data.data.stok
+      this.namasupplier = data.data.supplier.namaSupplier
+      this.alamatsupplier = data.data.supplier.alamat
+      this.nosupplier = data.data.supplier.noTelp
+    },
+    editBarang(){
+        const config = {
+        namaBarang : this.namabarang,
+        harga : parseInt(this.hargabarang),
+        stok: parseInt(this.StokBarang),
+        supplier : {
+          namaSupplier : this.namasupplier,
+          alamat : this.alamatsupplier,
+          noTelp : this.nosupplier
 
         }
-    },
-created(){
-    this.$store.dispatch('GET_DATA_ID_BARANG',this.$route.params.id)
-}
-}
+      }
+      this.$store.dispatch('UPDATE_BARANG',{config : config ,params : this.$route.params.id})
+    }
+  }
+};
 </script>
-<style lang="">
-    
-</style>
+<style lang=""></style>

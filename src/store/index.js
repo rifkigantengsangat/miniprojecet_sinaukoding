@@ -6,9 +6,8 @@ export default createStore({
     token: localStorage.getItem("token") || "",
     barang: [],
     supplier :[],
-    barangId :[],
     message:'',
-    page: 1,
+    page: 20,
     username : localStorage.getItem("profile") || "",
   },
   getters: {},
@@ -22,12 +21,7 @@ export default createStore({
     MESSAGE(state, message) {
       state.message  = message;
     },
-    NEXTPAGE(state){
-      state.page++
-    },
-    BARANG_ID(state,barangId){
-      state.barangId = barangId;
-    }
+    
    
   },
   actions: {
@@ -58,6 +52,7 @@ export default createStore({
       }
     },
     async GET_DATA({ commit }) {
+      console.log(this.state.page)
       const {data} = await axios.get(
         " http://159.223.57.121:8090/barang/find-all",
         {
@@ -65,9 +60,10 @@ export default createStore({
             Authorization: `Bearer ${this.state.token}`,
           },
           params: {
+            page: this.state.page,
             offset: 10,
             limit:15,
-            page: this.state.page 
+            
           },
         }
       );
@@ -89,6 +85,14 @@ export default createStore({
       console.log(data)
       commit('supplierData',data.data)
     },
+    async CREATE_BARANG ({commit},payload){
+     const response = await axios.post('http://159.223.57.121:8090/barang/create',payload,{
+      headers:{
+        'Authorization' : 'Bearer ' + this.state.token
+      }
+     })
+     console.log(response)
+    },
     async DELETE_BARANG({commit,dispatch},payload){
         await axios.delete('http://159.223.57.121:8090/barang/delete/'+payload,{
           headers:{
@@ -97,24 +101,37 @@ export default createStore({
         })
         dispatch('GET_DATA')
     },
-   async UPDATE_BARANG (payload,id){
-    const response = await axios.put(`http://159.223.57.121:8090/barang/update/${id}`,payload,{
+   async UPDATE_BARANG ({commit},{config,params}){
+    await axios.put('http://159.223.57.121:8090/barang/update/'+params,config,{
       headers:{
         'Authorization' : 'Bearer ' + this.state.token
       }
     })
-    console.log(response)
    },
-   async GET_DATA_ID_BARANG({commit},id){
-    console.log(id)
-      const {data} = await axios.get(`http://159.223.57.121:8090/barang/find-by-id/${id}`,{
-        headers: { 
-          'Authorization' : 'Bearer ' + this.state.token,
-        }
-      })
-      console.log(data)
-      commit('BARANG_ID', data.data)
-   }
+   async CREATE_SUPPLIER ({commit},payload){
+    const response = await axios.post('http://159.223.57.121:8090/supplier/create',payload,{
+     headers:{
+       'Authorization' : 'Bearer ' + this.state.token
+     }
+    })
+   
+   },
+   async DELETE_SUPPLIER({commit,dispatch},payload){
+    await axios.delete('http://159.223.57.121:8090/supplier/delete/'+payload,{
+      headers:{
+        'Authorization' : 'Bearer ' + this.state.token,
+      }
+    })
+    dispatch('GET_DATA_SUPPLIER')
+},
+async UPDATE_SUPPLIER ({commit},{config,params}){
+  await axios.put('http://159.223.57.121:8090/supplier/update/'+params,config,{
+    headers:{
+      'Authorization' : 'Bearer ' + this.state.token
+    }
+  })
+ },
+ 
   },
   modules: {},
 });

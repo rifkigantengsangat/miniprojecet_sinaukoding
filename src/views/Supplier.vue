@@ -23,7 +23,7 @@
             <th>{{data.namaSupplier}}</th>
                 <th>{{data.alamat}}</th>
                 <th>{{data.noTelp}}</th>
-                <th><button class="btn btn-danger">Hapus</button> <button class="btn btn-warning">Update</button></th>
+                <th><button @click="deleteDataSupplier(data.id)" class="btn btn-danger">Hapus</button> <router-link :to="`/supplier/${data.id}`" class="btn btn-warning">Update</router-link></th>
           </tr>
           
         </tbody>
@@ -47,6 +47,11 @@ export default {
       getDataBarang() {
             return this.$store.state.supplier;
         },
+    },
+    methods:{
+      deleteDataSupplier(id){
+      this.$store.dispatch('DELETE_SUPPLIER',id)
+    },
     }
 }
 </script>
