@@ -5,12 +5,15 @@ export default createStore({
   state: {
     token: localStorage.getItem("token") || "",
     barang: [],
+    hasilFilter:[],
     supplier :[],
     message:'',
-    page: 20,
+    page: 0,
     username : localStorage.getItem("profile") || "",
   },
-  getters: {},
+  getters: {
+    allHasilFilter: (state)=> state.hasilFilter
+  },
   mutations: {
     allData(state, data) {
       state.barang = data;
@@ -21,6 +24,12 @@ export default createStore({
     MESSAGE(state, message) {
       state.message  = message;
     },
+    SEARCHING_DATA (state,query){
+      const search = state.barang.filter(searhing=>{
+        return  searhing.namaBarang.toLowerCase().includes(query.toLowerCase()) 
+      })
+      this.state.hasilFilter = search
+    }
     
    
   },
@@ -45,7 +54,8 @@ export default createStore({
         "http://159.223.57.121:8090/auth/login",
         payload
       );
-      if(data.status == "OK"){
+     
+      if(data.message =="LOGIN SUCCESS"){
         localStorage.setItem("token", data?.data?.token);
         localStorage.setItem("profile", data?.data?.profileName);
          router.push('/dashboard')
@@ -102,11 +112,14 @@ export default createStore({
         dispatch('GET_DATA')
     },
    async UPDATE_BARANG ({commit},{config,params}){
-    await axios.put('http://159.223.57.121:8090/barang/update/'+params,config,{
+    const response =  await axios.put('http://159.223.57.121:8090/barang/update/'+params,config,{
       headers:{
         'Authorization' : 'Bearer ' + this.state.token
       }
     })
+    if(response.status ===200){
+      router.push('/dashboard')
+    }
    },
    async CREATE_SUPPLIER ({commit},payload){
     const response = await axios.post('http://159.223.57.121:8090/supplier/create',payload,{

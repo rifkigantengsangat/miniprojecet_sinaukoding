@@ -14,7 +14,7 @@
             <th scope="col">nama Supplier</th>
             <th scope="col">alamat</th>
             <th scope="col">No Tlp Supplier</th>
-            <th scope="col">Aksi</th>
+            <th scope="col text-center">Aksi</th>
           </tr>
         </thead>
         <tbody>
@@ -23,7 +23,7 @@
             <th>{{data.namaSupplier}}</th>
                 <th>{{data.alamat}}</th>
                 <th>{{data.noTelp}}</th>
-                <th><button @click="deleteDataSupplier(data.id)" class="btn btn-danger">Hapus</button> <router-link :to="`/supplier/${data.id}`" class="btn btn-warning">Update</router-link></th>
+                <th><button @click="deleteDataSupplier(data.id)" class="btn btn-danger m-4">Hapus</button> <router-link :to="`/supplier/${data.id}`" class="btn btn-warning">Update</router-link></th>
           </tr>
           
         </tbody>
