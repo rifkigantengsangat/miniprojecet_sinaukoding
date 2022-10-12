@@ -8,7 +8,8 @@ export default createStore({
     hasilFilter:[],
     supplier :[],
     message:'',
-    page: 0,
+    limit: 15,
+    offset : 15,
     username : localStorage.getItem("profile") || "",
   },
   getters: {
@@ -29,8 +30,12 @@ export default createStore({
         return  searhing.namaBarang.toLowerCase().includes(query.toLowerCase()) 
       })
       this.state.hasilFilter = search
+    },
+
+    NEXTPAGE_DATA (state){
+      state.limit +=15
+      state.offset -=15
     }
-    
    
   },
   actions: {
@@ -39,9 +44,10 @@ export default createStore({
         "http://159.223.57.121:8090/auth/register",
         payload
       );
-      if(response.status ===200){
-        commit('MESSAGE',response.data.message)
+      commit('MESSAGE',response.data.message)
+      if(response.data.message ==='REGISTER SUCCESSFUL'){
         setTimeout(() => { 
+          commit('MESSAGE','')
         router.push("/");
          }, 3000)
       }
@@ -54,11 +60,16 @@ export default createStore({
         "http://159.223.57.121:8090/auth/login",
         payload
       );
-     
+      commit('MESSAGE',data.message);
       if(data.message =="LOGIN SUCCESS"){
         localStorage.setItem("token", data?.data?.token);
         localStorage.setItem("profile", data?.data?.profileName);
-         router.push('/dashboard')
+         setTimeout(()=>{
+          router.push({
+            path : '/dashboard',
+          })
+          commit('MESSAGE','')
+         },2000)
       }
     },
     async GET_DATA({ commit }) {
@@ -70,9 +81,8 @@ export default createStore({
             Authorization: `Bearer ${this.state.token}`,
           },
           params: {
-            page: this.state.page,
-            offset: 10,
-            limit:15,
+            offset: this.state.offset,
+            limit:this.state.limit,
             
           },
         }
@@ -89,10 +99,10 @@ export default createStore({
          params:{
           offset:0,
           limit:15,
-          page:this.state.page
+         
          }
       })
-      console.log(data)
+     
       commit('supplierData',data.data)
     },
     async CREATE_BARANG ({commit},payload){
@@ -101,7 +111,17 @@ export default createStore({
         'Authorization' : 'Bearer ' + this.state.token
       }
      })
-     console.log(response)
+      if(response.data.status === "OK"){
+        commit("MESSAGE",response.data.message)
+
+        setTimeout(()=>{
+          commit("MESSAGE",'')
+           router.push({
+            path : '/dashboard'
+           })
+        },4000)
+      }
+   
     },
     async DELETE_BARANG({commit,dispatch},payload){
         await axios.delete('http://159.223.57.121:8090/barang/delete/'+payload,{

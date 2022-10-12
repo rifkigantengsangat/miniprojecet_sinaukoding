@@ -91,8 +91,8 @@ export default {
       this.$store.commit("SEARCHING_DATA",this.search );
     },
     nextpage() {
-      this.$store.state.page++;
-      console.log(this.$store.state.page);
+      
+      this.$store.commit("NEXTPAGE_DATA")
       this.$store.dispatch("GET_DATA");
     },
 

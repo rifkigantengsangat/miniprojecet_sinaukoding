@@ -55,18 +55,15 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(),
   routes,
-  linkActiveClass: 'active-link',
-  linkExactActiveClass: 'exact-active-link',
 })
 router.beforeEach((to,from,next)=>{
-if(!store.state.token && to.name !== 'home' && to.name !=='Register'){
+if(localStorage.getItem('token') ==='undefined' && to.path === '/dashboard'){
   router.push('/')
-  console.log(to)
 }else next()
 
 })
 router.beforeEach((to,from,next)=>{
-  if(!store.state.token && to.name === 'home'){
+  if(localStorage.getItem('token') !== null && to.name === 'home'){
     router.push('/dashboard')
   }else next()
   

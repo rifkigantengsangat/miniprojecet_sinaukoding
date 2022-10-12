@@ -7,13 +7,16 @@
         </div>
         <div class="col-md-12 col-lg-6 col-sm-12 col-12 shadow p-4  ">
           <form @submit.prevent="login">
+            <div class="alert alert-success" role="alert">
+              {{message}}
+            </div>
             <div>
                 <h3 class="text-center">login</h3>
             </div>
             
             <div class="mb-3">
                 <label class="form-label" for="inputEmail">Username</label>
-                <input type="email" v-model="Username" class="form-control rounded-3" id="inputEmail" placeholder="Username">
+                <input type="text" v-model="Username" class="form-control rounded-3" id="inputEmail" placeholder="Username">
             </div>
             <div class="mb-3">
                 <label class="form-label" for="inputPassword">Password</label>
@@ -53,7 +56,7 @@ export default {
   },
   computed:{
     message(){
-      
+      this.$store.state.message
     }
   }
   
