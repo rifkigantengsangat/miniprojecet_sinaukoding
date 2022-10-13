@@ -29,9 +29,9 @@
         
         <label for="inputsupp" class="col-sm-2 col-form-label">Supplier</label>
         <div class="col-sm-10">
-          <input type="text" class="form-control mb-1" id="inputsupp" placeholder="masukan Nama supplier" v-model="namasupplier">
-          <input type="text" class="form-control mb-1" placeholder="Masukan Alamat Supplier"  v-model="alamatsupplier">
-          <input type="text" class="form-control" placeholder="Masukan No Telp Supplier" v-model="nosupplier">
+          <select class="w-100" v-model="Supplier" >
+            <option v-for="(supp,index) in supplier" :value="supp"> {{supp.namaSupplier}}</option>
+          </select>
         </div>
       </div>
       <hr>
@@ -50,9 +50,8 @@ export default {
       namabarang: "",
       hargabarang: "",
       StokBarang: "",
-      namasupplier: "",
-      alamatsupplier: "",
-      nosupplier: "",
+      Supplier : {},
+      
 
     };
   },
@@ -62,15 +61,12 @@ export default {
         namaBarang : this.namabarang,
         harga : parseInt(this.hargabarang),
         stok: parseInt(this.StokBarang),
-        supplier : {
-          namaSupplier : this.namasupplier,
-          alamat : this.alamatsupplier,
-          noTelp : this.nosupplier
-
-        }
+        supplier : this.Supplier
       }
+      console.log(config)
       this.$store.dispatch("CREATE_BARANG",config)
-    }
+    },
+
   },
   computed : {
     message(){
@@ -78,8 +74,13 @@ export default {
     },
     supplier(){
       return this.$store.state.supplier
-    }
-  }
+    },
+
+  },
+  created(){
+    this.$store.dispatch('GET_DATA_SUPPLIER')
+  },
+  
 
 };
 </script>

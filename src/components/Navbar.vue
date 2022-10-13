@@ -1,10 +1,10 @@
 <template lang="">
     <nav class="navbar bg-dark">
         <div class="container-fluid">
-          <a class="navbar-brand text-white">
+          <router-link to="/dashboard" class="navbar-brand text-white">
             <img src="../assets/sinaulogo.png" alt="Logo" width="100" height="30" class="d-inline-block align-text-top" />
             MARKETPLACE
-          </a>
+          </router-link>
         </div>
       </nav>
 </template>

@@ -4,9 +4,15 @@
       <h4>Dashboard</h4>
       <div class="d-flex justify-content-between">
         <h5>Barang</h5>
-        <router-link to="/tambahbarang" class="btn btn-success"
-          >Tambah Barang</router-link
-        >
+        <div>
+          <router-link to="/tambahbarang" class="btn btn-success"
+            >Tambah Barang</router-link
+          >
+          <div class="form-outline">
+            <input type="search" id="form1" class="form-control" placeholder="Type query" aria-label="Search" v-model="search" />
+          </div>
+
+        </div>
       </div>
     </div>
       <table class="table table-dark">
@@ -87,9 +93,7 @@ export default {
   },
 
   methods: {
-    searchingEngine() {
-      this.$store.commit("SEARCHING_DATA",this.search );
-    },
+  
     nextpage() {
       
       this.$store.commit("NEXTPAGE_DATA")
@@ -100,6 +104,9 @@ export default {
       console.log(id);
       this.$store.dispatch("DELETE_BARANG", id);
     },
+    searchingData(){
+      this.$store.dispatch("SEARCH_BARANG",search);
+    }
   },
 };
 </script>

@@ -68,5 +68,9 @@ router.beforeEach((to,from,next)=>{
   }else next()
   
   })
+  router.afterEach((to,from,next)=>{
+    console.log(to)
+    next()
+  })
 
 export default router

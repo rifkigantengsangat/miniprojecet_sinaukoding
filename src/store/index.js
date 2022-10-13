@@ -5,11 +5,11 @@ export default createStore({
   state: {
     token: localStorage.getItem("token") || "",
     barang: [],
-    hasilFilter:[],
+
     supplier :[],
     message:'',
     limit: 15,
-    offset : 15,
+    offset : 0,
     username : localStorage.getItem("profile") || "",
   },
   getters: {
@@ -25,16 +25,11 @@ export default createStore({
     MESSAGE(state, message) {
       state.message  = message;
     },
-    SEARCHING_DATA (state,query){
-      const search = state.barang.filter(searhing=>{
-        return  searhing.namaBarang.toLowerCase().includes(query.toLowerCase()) 
-      })
-      this.state.hasilFilter = search
-    },
+   
 
     NEXTPAGE_DATA (state){
       state.limit +=15
-      state.offset -=15
+      state.offset +=1
     }
    
   },
@@ -68,6 +63,7 @@ export default createStore({
           router.push({
             path : '/dashboard',
           })
+          window.location.reload();
           commit('MESSAGE','')
          },2000)
       }
@@ -164,6 +160,16 @@ async UPDATE_SUPPLIER ({commit},{config,params}){
     }
   })
  },
+ async SEARCH_BARANG({commit},params){
+  await axios.get('http://159.223.57.121:8090/barang/find-all',{
+   headers: {
+    'Authorization' : 'Bearer ' + this.state.token,
+   },
+   params : {
+    search : params 
+   }
+  })
+ }
  
   },
   modules: {},

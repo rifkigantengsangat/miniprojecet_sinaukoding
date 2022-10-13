@@ -51,25 +51,9 @@
             >Supplier</label
           >
           <div class="col-sm-10">
-            <input
-              type="text"
-              class="form-control mb-1"
-              id="inputsupp"
-              placeholder="masukan Nama supplier"
-              v-model="namasupplier"
-            />
-            <input
-              type="text"
-              class="form-control mb-1"
-              placeholder="Masukan Alamat Supplier"
-              v-model="alamatsupplier"
-            />
-            <input
-              type="text"
-              class="form-control"
-              placeholder="Masukan No Telp Supplier"
-              v-model="nosupplier"
-            />
+            <select class="w-100" v-model="supplier" >
+              <option v-for="(supp,index) in Supplier" :value="supp"> {{supp.namaSupplier}}</option>
+            </select>
           </div>
         </div>
         <hr />
@@ -89,13 +73,18 @@ export default {
       namabarang: "",
       hargabarang: "",
       StokBarang: "",
-      namasupplier: "",
-      alamatsupplier: "",
-      nosupplier: "",
+      supplier : {},
     };
   },
   created(){
   this.fetchDataId();
+  this.$store.dispatch('GET_DATA_SUPPLIER')
+
+  },
+  computed:{
+    Supplier(){
+      return this.$store.state.supplier
+    }
   },
   methods:{
     async fetchDataId(){
@@ -107,21 +96,15 @@ export default {
       this.namabarang =data.data.namaBarang
       this.hargabarang = data.data.harga
       this.StokBarang = data.data.stok
-      this.namasupplier = data.data.supplier.namaSupplier
-      this.alamatsupplier = data.data.supplier.alamat
-      this.nosupplier = data.data.supplier.noTelp
+      this.supplier = this.Supplier.namaSupplier
+     
     },
     editBarang(){
         const config = {
         namaBarang : this.namabarang,
         harga : parseInt(this.hargabarang),
         stok: parseInt(this.StokBarang),
-        supplier : {
-          namaSupplier : this.namasupplier,
-          alamat : this.alamatsupplier,
-          noTelp : this.nosupplier
-
-        }
+        supplier : this.supplier
       }
       this.$store.dispatch('UPDATE_BARANG',{config : config ,params : this.$route.params.id})
     }

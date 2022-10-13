@@ -28,7 +28,7 @@ export default {
     
     <div class="container-side">
         <div class="card" style="width: 18rem;">
-            <img src="https://hips.hearstapps.com/hmg-prod/images/olivia-sour-1621618459.jpg?crop=0.5xw:1xh;center,top&resize=640:*" class="card-img-top" alt="...">
+            <img src="https://hips.hearstapps.com/hmg-prod/images/olivia-sour-1621618459.jpg?crop=0.5xw:1xh;center,top&resize=640:*" class="card-img-top" alt="gambar">
             <div class="card-body">
               <h5 class="card-title text-center">{{username}}</h5>
             </div>
