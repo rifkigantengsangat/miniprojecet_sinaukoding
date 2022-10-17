@@ -8,11 +8,11 @@
           <router-link to="/tambahbarang" class="btn btn-success"
             >Tambah Barang</router-link
           >
-          <div class="form-outline">
-            <input type="search" id="form1" class="form-control" placeholder="Type query" aria-label="Search" v-model="search" />
-          </div>
-
         </div>
+      </div>
+      <div class="form-outline py-2 d-flex">
+        <input type="search" id="form1" class="form-control" placeholder="Search Data" aria-label="Search" v-model="search" />
+        <button class="btn btn-secondary ps-2" @click="searchingData">search</button>
       </div>
     </div>
       <table class="table table-dark">
@@ -28,7 +28,23 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(data, index) in getData" :key="index">
+          <tr v-if="data?.length>0" v-for="(datas,index) in data" :key="datas.id">
+            <th scope="row">{{ index + 1 }}</th>
+            <th>{{ datas?.namaBarang }}</th>
+            <th>{{ datas?.stok }}</th>
+            <th>{{ datas?.harga }}</th>
+            <th>{{ datas?.supplier?.namaSupplier }}</th>
+            <th>{{ datas?.supplier?.noTelp }}</th>
+            <th class="">
+              <button @click="deleteData(data.id)" class="btn btn-danger mx-3">
+                Hapus
+              </button>
+              <router-link :to="`/barang/${data.id}`" class="btn btn-warning"
+                >Update</router-link
+              >
+            </th>
+          </tr>
+          <tr v-else v-for="(data, index) in getData" :key="index">
             <th scope="row">{{ index + 1 }}</th>
             <th>{{ data.namaBarang }}</th>
             <th>{{ data.stok }}</th>
@@ -48,9 +64,9 @@
       </table>
     <div class="d-flex justify-content-end p-4">
       <div class="px-2">
-        <button class="btn btn-primary">Previous Page</button>
+        <button  @click="previouspage" class="btn btn-primary">Previous Page</button>
       </div>
-      <button @click="nextpage()" class="btn btn-primary">Next Page</button>
+      <button @click="nextpage" class="btn btn-primary">Next Page</button>
       <h5>{{ page }}</h5>
     </div>
   </div>
@@ -65,6 +81,7 @@ export default {
   },
   created() {
     this.$store.dispatch("GET_DATA");
+    this.$store.dispatch("ALL_DATA")
   },
   watch:{
     data(oldValue,cuerrenvalue){
@@ -80,14 +97,14 @@ export default {
       return this.$store.state.barang;
     },
     page() {
-      return this.$store.state.page;
+      return this.$store.state.offset;
     },
     data(){
       return this.$store.state.hasilFilter;
+      
+      
     },
-    ...mapGetters([
-      'AllHasilFilter'
-    ])
+
     
 
   },
@@ -95,9 +112,12 @@ export default {
   methods: {
   
     nextpage() {
-      
       this.$store.commit("NEXTPAGE_DATA")
-      this.$store.dispatch("GET_DATA");
+      this.$store.dispatch("GET_DATA")
+    },
+    previouspage() {
+      this.$store.commit("PREVIOUS_DATA")
+      this.$store.dispatch("GET_DATA")
     },
 
     deleteData(id) {
@@ -105,7 +125,8 @@ export default {
       this.$store.dispatch("DELETE_BARANG", id);
     },
     searchingData(){
-      this.$store.dispatch("SEARCH_BARANG",search);
+      console.log(this.data)
+      this.$store.commit("FILTERDATA",this.search);
     }
   },
 };

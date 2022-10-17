@@ -5,11 +5,12 @@ export default createStore({
   state: {
     token: localStorage.getItem("token") || "",
     barang: [],
-
+   hasilFilter : [],
     supplier :[],
+    allData: [],
     message:'',
     limit: 15,
-    offset : 0,
+    offset : 1,
     username : localStorage.getItem("profile") || "",
   },
   getters: {
@@ -25,11 +26,26 @@ export default createStore({
     MESSAGE(state, message) {
       state.message  = message;
     },
-   
+   FILTERDATA (state,query){
+    const filteredData  =state.allData.filter((barang)=>{
+     return barang.namaBarang.toLowerCase().includes(query.toLowerCase())
+    })
+    state.hasilFilter= filteredData
+    
+   },
+   ALL_DATA(state,data){
+   state.allData = data
+   },
 
     NEXTPAGE_DATA (state){
-      state.limit +=15
-      state.offset +=1
+      state.offset ++
+    },
+    PREVIOUS_DATA(state){
+    if(state.offset < 1){
+      state.offset = 1
+    }else{
+       state.offset --
+    }
     }
    
   },
@@ -68,8 +84,21 @@ export default createStore({
          },2000)
       }
     },
+    async ALL_DATA({commit}){
+   const {data} = await axios.get( " http://159.223.57.121:8090/barang/find-all",
+   {
+     headers: {
+       Authorization: `Bearer ${this.state.token}`,
+     },
+     params: {
+       offset: 0,
+       limit:200,
+       
+     },
+   })
+    commit('ALL_DATA' ,data?.data)
+    },
     async GET_DATA({ commit }) {
-      console.log(this.state.page)
       const {data} = await axios.get(
         " http://159.223.57.121:8090/barang/find-all",
         {
@@ -78,7 +107,7 @@ export default createStore({
           },
           params: {
             offset: this.state.offset,
-            limit:this.state.limit,
+            limit:15
             
           },
         }
@@ -161,15 +190,24 @@ async UPDATE_SUPPLIER ({commit},{config,params}){
   })
  },
  async SEARCH_BARANG({commit},params){
-  await axios.get('http://159.223.57.121:8090/barang/find-all',{
-   headers: {
-    'Authorization' : 'Bearer ' + this.state.token,
-   },
-   params : {
-    search : params 
-   }
-  })
- }
+  try {
+    const response =  await axios.get('http://159.223.57.121:8090/barang/find-all',{
+      headers: {
+       'Authorization' : 'Bearer ' + this.state.token,
+      },
+      params : {
+       offset:0,
+       page : 2,
+       limit:100,
+       search : params 
+      }
+     })
+    console.log(response);
+  } catch (error) {
+    console.log(error.message);
+  }
+ },
+ 
  
   },
   modules: {},

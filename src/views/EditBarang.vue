@@ -52,7 +52,7 @@
           >
           <div class="col-sm-10">
             <select class="w-100" v-model="supplier" >
-              <option v-for="(supp,index) in Supplier" :value="supp"> {{supp.namaSupplier}}</option>
+              <option v-for="(supp,index) in Supplier" :value="supp" > {{supp.namaSupplier}}</option>
             </select>
           </div>
         </div>
@@ -73,7 +73,9 @@ export default {
       namabarang: "",
       hargabarang: "",
       StokBarang: "",
+      namaSupplier : "",
       supplier : {},
+    
     };
   },
   created(){
@@ -93,10 +95,13 @@ export default {
           'Authorization' : 'Bearer ' + this.$store.state.token,
         }
       })
+      
       this.namabarang =data.data.namaBarang
       this.hargabarang = data.data.harga
       this.StokBarang = data.data.stok
-      this.supplier = this.Supplier.namaSupplier
+      this.namaSupplier  = data?.data?.supplier?.namaSupplier
+      this.supplier = this.Supplier
+    
      
     },
     editBarang(){
@@ -106,6 +111,8 @@ export default {
         stok: parseInt(this.StokBarang),
         supplier : this.supplier
       }
+      console.log("ini config",config)
+      console.log("ini nama Supplier",this.namaSupplier);
       this.$store.dispatch('UPDATE_BARANG',{config : config ,params : this.$route.params.id})
     }
   }
